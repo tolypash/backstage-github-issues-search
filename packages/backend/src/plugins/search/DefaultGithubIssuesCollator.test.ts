@@ -32,6 +32,10 @@ describe("DefaultGithubIssuesCollator", () => {
         collator = new DefaultGithubIssuesCollator()
     })
 
+    it('has correct type', async () => {
+        expect(collator.type).toBe("github-issue")
+    })
+
 
     it('executes the collator', async () => {
         const documents = await collator.execute()

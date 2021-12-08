@@ -65,7 +65,6 @@ const SearchPage = () => {
               {({ results }) => (
                 <List>
                   {results.map(({ type, document }) => {
-                    console.log(type)
                     switch (type) {
                       case 'software-catalog':
                         return (

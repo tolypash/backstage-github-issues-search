@@ -7,6 +7,7 @@ import {
 import { PluginEnvironment } from '../types';
 import { DefaultCatalogCollator } from '@backstage/plugin-catalog-backend';
 import { DefaultTechDocsCollator } from '@backstage/plugin-techdocs-backend';
+import { DefaultGithubIssuesCollator } from './search/githubIssues';
 
 export default async function createPlugin({
   logger,
@@ -37,6 +38,11 @@ export default async function createPlugin({
       tokenManager,
     }),
   });
+
+  indexBuilder.addCollator({
+    defaultRefreshIntervalSeconds: 600,
+    collator: new DefaultGithubIssuesCollator()
+  })
 
   // The scheduler controls when documents are gathered from collators and sent
   // to the search engine for indexing.

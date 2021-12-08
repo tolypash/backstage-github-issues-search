@@ -3,6 +3,7 @@ import { makeStyles, Theme, Grid, List, Paper } from '@material-ui/core';
 
 import { CatalogResultListItem } from '@backstage/plugin-catalog';
 import { DocsResultListItem } from '@backstage/plugin-techdocs';
+import { IssueResultListItem } from './githubIssues';
 
 import {
   SearchBar,
@@ -43,14 +44,14 @@ const SearchPage = () => {
           <Grid item xs={3}>
             <Paper className={classes.filters}>
               <SearchType
-                values={['techdocs', 'software-catalog']}
+                values={['techdocs', 'software-catalog', 'github-issue']}
                 name="type"
                 defaultValue="software-catalog"
               />
               <SearchFilter.Select
                 className={classes.filter}
                 name="kind"
-                values={['Component', 'Template']}
+                values={['Component', 'Template', 'Issue']}
               />
               <SearchFilter.Checkbox
                 className={classes.filter}
@@ -64,6 +65,7 @@ const SearchPage = () => {
               {({ results }) => (
                 <List>
                   {results.map(({ type, document }) => {
+                    console.log(type)
                     switch (type) {
                       case 'software-catalog':
                         return (
@@ -79,6 +81,13 @@ const SearchPage = () => {
                             result={document}
                           />
                         );
+                      case 'github-issue':
+                        return (
+                          <IssueResultListItem
+                            key={document.location}
+                            result={document}
+                          />
+                        )
                       default:
                         return (
                           <DefaultResultListItem

@@ -30,6 +30,7 @@ export class DefaultGithubIssuesCollator implements DocumentCollator {
         let allEntities: IGithubIssue[] = []
 
         while (!end) {
+            // max issues per_page is 100, so we must fetch one page after the other
             const res = await fetch(url + page)
             const entities = await res.json()
 

@@ -16,6 +16,7 @@ const useStyles = makeStyles({
     "-webkit-box-orient": "vertical"
   },
   flexContainer: {
+    display: 'flex',
     flexWrap: 'wrap',
   },
   itemText: {
@@ -31,10 +32,14 @@ export const IssueResultListItem = ({ result }: Props) => {
     <Link to={result.location}>
       <ListItem alignItems="flex-start" className={classes.flexContainer}>
         <ListItemAvatar>
-          <Avatar
-            src={result.user.avatar_url}
-            alt={result.user.login}
-          />
+          <Box className={classes.flexContainer} alignItems="center">
+            <Avatar
+              src={result.user.avatar_url}
+              alt={result.user.login}
+              style={{ marginRight: 10 }}
+            />
+            {result.user.name}
+          </Box>
         </ListItemAvatar>
         <ListItemText
           className={classes.itemText}

@@ -36,7 +36,7 @@ export class DefaultGithubIssuesCollator implements DocumentCollator {
         const per_page = 100
         const url = `https://api.github.com/repos/backstage/backstage/issues?state=${state}&per_page=${per_page}&page=`
 
-        const max_page = 3 // max pages to fetch from
+        const max_page = 3 // max page number to fetch from
 
         let allEntities: IGithubIssue[] = []
         let page = 1;
@@ -47,7 +47,7 @@ export class DefaultGithubIssuesCollator implements DocumentCollator {
             const res = await fetch(url + page)
             const entities = await res.json()
 
-            if (entities.length < 100 || page >= max_page) {
+            if (entities.length < per_page || page >= max_page) {
                 end = true
             }
 

@@ -19,11 +19,15 @@ const useStyles = makeStyles({
 
 export const IssueResultListItem = ({ result }: Props) => {
   const classes = useStyles()
+
   return (
     <Link to={result.location}>
       <ListItem alignItems="flex-start">
         <ListItemAvatar>
-          <Avatar src={result.user.avatar_url} />
+          <Avatar
+            src={result.user.avatar_url}
+            alt={result.user.login}
+          />
         </ListItemAvatar>
         <ListItemText
           primaryTypographyProps={{ variant: 'h6' }}

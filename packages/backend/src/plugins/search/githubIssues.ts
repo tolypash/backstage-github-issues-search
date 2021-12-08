@@ -6,7 +6,7 @@ export interface IGithubIssue extends IndexableDocument {
     title: string
     body: string // body
     user: IGithubUser
-    state: "open" | "closed" | "all"
+    state: "open" | "closed"
     html_url: string
 }
 
@@ -19,11 +19,35 @@ export class DefaultGithubIssuesCollator implements DocumentCollator {
     public readonly type: string = 'github-issue';
 
     async execute() {
-        const url = `https://api.github.com/repos/backstage/backstage/issues`
-        const res = await fetch(url)
-        const entities: IGithubIssue[] = await res.json()
+        const state = "open"; // set to "all" to fetch closed issues as well
+        const per_page = 100
+        const url = `https://api.github.com/repos/backstage/backstage/issues?state=${state}&per_page=${per_page}&page=`
+        let page = 1;
+        let end = false;
 
-        const result = entities.map(
+        let allEntities: IGithubIssue[] = []
+
+        while (!end) {
+            const res = await fetch(url + page)
+            const entities = await res.json()
+
+            if (entities.length < 100) {
+                end = true
+            }
+
+            if (Array.isArray(entities)) {
+                allEntities = [...allEntities, ...entities]
+                page++
+            } else {
+                end = true
+
+                if (entities.message && entities.message.includes("API rate limit exceeded")) {
+                    console.error("GitHub API Limit Reached! :(")
+                }
+            }
+        }
+
+        const result = allEntities.map(
             (entity) => {
                 return {
                     id: entity.id,
@@ -31,8 +55,8 @@ export class DefaultGithubIssuesCollator implements DocumentCollator {
                     text: entity.body,
                     state: entity.state,
                     user: {
-                      avatar_url: entity.user.avatar_url,
-                      name: entity.user.login 
+                        avatar_url: entity.user.avatar_url,
+                        name: entity.user.login
                     },
                     // location: `/issues/${entity.id}`,
                     location: entity.html_url,

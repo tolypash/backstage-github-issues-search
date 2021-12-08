@@ -11,6 +11,7 @@ import {
   SearchResult,
   SearchType,
   DefaultResultListItem,
+  useSearch,
 } from '@backstage/plugin-search';
 import { Content, Header, Page } from '@backstage/core-components';
 
@@ -30,6 +31,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const SearchPage = () => {
   const classes = useStyles();
+  const { types, filters, setFilters } = useSearch()
+
+  React.useEffect(() => {
+    if (!types.includes('github-issue')) { // remove status filter if github-issue type not selected
+      setFilters({
+        ...filters,
+        state: undefined
+      })
+    }
+  }, [types])
 
   return (
     <Page themeId="home">
@@ -58,6 +69,11 @@ const SearchPage = () => {
                 name="lifecycle"
                 values={['experimental', 'production']}
               />
+              {types && types.includes('github-issue') && <SearchFilter.Checkbox
+                className={classes.filter}
+                name="state"
+                values={['open', 'closed']}
+              />}
             </Paper>
           </Grid>
           <Grid item xs={9}>

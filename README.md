@@ -1,6 +1,7 @@
 # [Backstage](https://backstage.io)
 
-This is your newly scaffolded Backstage App, Good Luck!
+By default it fetches 300 issues from GitHub Backstage official repository. To increase this, change `max_page` variable in `packages/backend/src/plugins/search/DefaultGithubIssuesCollator.ts`
+
 
 To start the app, run:
 

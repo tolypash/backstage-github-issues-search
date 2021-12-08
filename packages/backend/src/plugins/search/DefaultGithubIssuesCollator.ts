@@ -1,13 +1,26 @@
 import { IndexableDocument, DocumentCollator } from '@backstage/search-common';
 import fetch from 'cross-fetch';
 
-export interface IGithubIssue extends IndexableDocument {
+export interface IGithubIssue {
     id: number
     title: string
     body: string // body
     user: IGithubUser
     state: "open" | "closed"
     html_url: string
+}
+
+export interface IGithubIssueDocument extends IndexableDocument {
+    id: number
+    title: string
+    text: string
+    state: "open" | "closed"
+    user: {
+        name: string
+        avatar_url: string
+    }
+    location: string
+    kind: "Issue"
 }
 
 interface IGithubUser {
@@ -22,12 +35,12 @@ export class DefaultGithubIssuesCollator implements DocumentCollator {
         const state = "all"; // "open" to get open issues, "closed" to get closed issues, "all" to get all issues
         const per_page = 100
         const url = `https://api.github.com/repos/backstage/backstage/issues?state=${state}&per_page=${per_page}&page=`
-        let page = 1;
-        let end = false;
 
         const max_page = 3 // max pages to fetch from
 
         let allEntities: IGithubIssue[] = []
+        let page = 1;
+        let end = false;
 
         while (!end) {
             // max issues per_page is 100, so we must fetch one page after the other
@@ -51,7 +64,7 @@ export class DefaultGithubIssuesCollator implements DocumentCollator {
         }
 
         const result = allEntities.map(
-            (entity) => {
+            (entity: IGithubIssue): IGithubIssueDocument => {
                 return {
                     id: entity.id,
                     title: entity.title,

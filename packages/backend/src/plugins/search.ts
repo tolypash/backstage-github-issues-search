@@ -7,7 +7,7 @@ import {
 import { PluginEnvironment } from '../types';
 import { DefaultCatalogCollator } from '@backstage/plugin-catalog-backend';
 import { DefaultTechDocsCollator } from '@backstage/plugin-techdocs-backend';
-import { DefaultGithubIssuesCollator } from './search/githubIssues';
+import { DefaultGithubIssuesCollator } from './search/DefaultGithubIssuesCollator';
 
 export default async function createPlugin({
   logger,

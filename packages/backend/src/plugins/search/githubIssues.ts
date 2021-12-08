@@ -19,11 +19,13 @@ export class DefaultGithubIssuesCollator implements DocumentCollator {
     public readonly type: string = 'github-issue';
 
     async execute() {
-        const state = "open"; // set to "all" to fetch closed issues as well
+        const state = "all"; // "open" to get open issues, "closed" to get closed issues, "all" to get all issues
         const per_page = 100
         const url = `https://api.github.com/repos/backstage/backstage/issues?state=${state}&per_page=${per_page}&page=`
         let page = 1;
         let end = false;
+
+        const max_page = 3 // max pages to fetch from
 
         let allEntities: IGithubIssue[] = []
 
@@ -31,7 +33,7 @@ export class DefaultGithubIssuesCollator implements DocumentCollator {
             const res = await fetch(url + page)
             const entities = await res.json()
 
-            if (entities.length < 100) {
+            if (entities.length < 100 || page >= max_page) {
                 end = true
             }
 
